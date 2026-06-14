@@ -1,0 +1,44 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+generator client {
+  provider = "prisma-client-js"
+}
+
+model MenuItem {
+  id          String   @id @default(cuid())
+  itemCode    String   @unique
+  name        String
+  nameHindi   String?
+  category    String
+  price       Float
+  description String?
+  imageUrl    String?
+  isVeg       Boolean  @default(true)
+  isAvailable Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  orderNumber String   @unique
+  seatNumber  String
+  coachNumber String
+  trainNumber String
+  items       Json     // [{menuItemId, name, price, quantity}]
+  totalAmount Float
+  status      String   @default("Ordered")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Complaint {
+  id          String   @id @default(cuid())
+  orderNumber String?
+  seatNumber  String
+  category    String
+  description String
+  status      String   @default("Open")
+  createdAt   DateTime @default(now())
+}

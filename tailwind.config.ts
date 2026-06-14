@@ -11,6 +11,14 @@ const config: Config = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        rail: {
+          blue: "var(--rail-blue)",
+          "blue-dark": "var(--rail-blue-dark)",
+          saffron: "var(--rail-saffron)",
+          green: "var(--rail-green)",
+          amber: "var(--rail-amber)",
+          red: "var(--rail-red)",
+        },
       },
     },
   },

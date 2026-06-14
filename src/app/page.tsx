@@ -1,101 +1,156 @@
-import Image from "next/image";
+"use client";
+
+import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useSessionStore } from "@/store/sessionStore";
+import { useI18nStore } from "@/lib/i18n";
+import SplashScreen from "@/components/SplashScreen";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+const TRAINS = [
+  "12345 - Rajdhani Express",
+  "15678 - Shatabdi Express",
+  "16789 - Intercity Express",
+  "18901 - Local Train",
+  "20123 - Freight Express",
+  "11001 - Pune SF Express",
+  "11002 - Howrah Mail",
+  "12001 - Bhopal Shatabdi",
+  "12124 - Deccan Queen",
+  "12201 - Garib Rath",
+  "12301 - Howrah Rajdhani",
+  "12423 - Dibrugarh Rajdhani",
+  "12555 - Gorakhdham Express",
+  "12615 - Grand Trunk Express",
+  "12703 - Falaknuma Express",
+  "12801 - Purushottam Express",
+  "12951 - Mumbai Rajdhani",
+  "22691 - Bengaluru Rajdhani"
+];
+
+const COACHES = ["A1", "A2", "A3", "B1", "B2", "B3", "B4", "B5", "S1", "S2", "S3", "S4"];
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="https://nextjs.org/icons/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [showSplash, setShowSplash] = useState(false);
+  const [train, setTrain] = useState("");
+  const [coach, setCoach] = useState("");
+  
+  // Autocomplete state
+  const [showTrains, setShowTrains] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+  
+  const { setSession } = useSessionStore();
+  const { t } = useI18nStore();
+  const router = useRouter();
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="https://nextjs.org/icons/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="https://nextjs.org/icons/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+  useEffect(() => {
+    const hasSeenSplash = sessionStorage.getItem("railsafe_splash_shown");
+    if (!hasSeenSplash) {
+      setShowSplash(true);
+    }
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowTrains(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSplashComplete = () => {
+    sessionStorage.setItem("railsafe_splash_shown", "true");
+    setShowSplash(false);
+  };
+
+  const handleStartOrder = () => {
+    if (!train || !coach) return;
+    setSession(train.split(' - ')[0], coach); // Store just the train number
+    router.push("/menu");
+  };
+
+  const filteredTrains = TRAINS.filter(t => t.toLowerCase().includes(train.toLowerCase()));
+
+  return (
+    <>
+      {showSplash && <SplashScreen onComplete={handleSplashComplete} />}
+      
+      <div className="min-h-[calc(100vh-140px)] flex flex-col items-center justify-center py-12 px-4 bg-gradient-to-br from-rail-blue/10 to-rail-saffron/10">
+        <Card className="w-full max-w-md shadow-2xl border-t-4 border-t-rail-saffron overflow-visible">
+          <CardHeader className="space-y-1 bg-white rounded-t-xl pb-6 border-b">
+            <CardTitle className="text-2xl text-center font-bold text-rail-blue-dark">{t("appTitle")}</CardTitle>
+            <CardDescription className="text-center text-base text-slate-600">
+              {t("tagline")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="pt-8 space-y-6 bg-white rounded-b-xl">
+            <div className="space-y-2 relative" ref={dropdownRef}>
+              <Label htmlFor="trainNumber" className="text-slate-800 font-semibold">{t("trainNumber")}</Label>
+              <Input 
+                id="trainNumber" 
+                value={train} 
+                onChange={(e) => {
+                  setTrain(e.target.value);
+                  setShowTrains(true);
+                }}
+                onFocus={() => setShowTrains(true)}
+                placeholder="Search train by name or number..."
+                className="h-12 text-lg focus-visible:ring-rail-blue focus-visible:border-rail-blue bg-white text-slate-900 border-slate-300"
+                autoComplete="off"
+              />
+              {showTrains && (
+                <div className="absolute z-50 w-full mt-1 bg-white border border-slate-200 rounded-md shadow-lg max-h-60 overflow-y-auto">
+                  {filteredTrains.length > 0 ? (
+                    filteredTrains.map((t) => (
+                      <div 
+                        key={t} 
+                        className="px-4 py-3 hover:bg-rail-blue/10 cursor-pointer text-slate-800 border-b border-slate-100 last:border-0"
+                        onClick={() => {
+                          setTrain(t);
+                          setShowTrains(false);
+                        }}
+                      >
+                        {t}
+                      </div>
+                    ))
+                  ) : (
+                    <div className="px-4 py-3 text-slate-500 italic">No trains found</div>
+                  )}
+                </div>
+              )}
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="coachNumber" className="text-slate-800 font-semibold">{t("coachNumber")}</Label>
+              <Select value={coach} onValueChange={(val) => { if (val) setCoach(val); }}>
+                <SelectTrigger id="coachNumber" className="h-12 text-lg focus:ring-rail-blue focus:border-rail-blue bg-white text-slate-900 border-slate-300 shadow-sm relative z-0">
+                  <SelectValue placeholder="Select Coach" />
+                </SelectTrigger>
+                <SelectContent className="bg-white border-slate-200 shadow-xl z-[100]">
+                  {COACHES.map(c => (
+                    <SelectItem key={c} value={c} className="focus:bg-rail-blue/10 cursor-pointer text-slate-800">
+                      {c}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <Button 
+              size="lg" 
+              className="w-full h-14 text-lg font-bold mt-4 shadow-md bg-rail-saffron hover:bg-rail-amber text-white transition-all border-none"
+              onClick={handleStartOrder}
+              disabled={!train || !coach}
+            >
+              {t("startOrder")}
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    </>
   );
 }

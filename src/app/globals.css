@@ -4,24 +4,55 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --foreground: #0f172a;
+  --rail-blue: #1a4d8c;
+  --rail-blue-dark: #003366;
+  --rail-saffron: #ff9933;
+  --rail-green: #2e8b57;
+  --rail-amber: #f5a623;
+  --rail-red: #d32f2f;
 }
 
 body {
-  color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  color: var(--foreground);
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Print styles for Customer Bill and Kitchen Slip */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .print-content,
+  .print-content * {
+    visibility: visible;
+  }
+  /* Hide kitchen slip if printing bill */
+  body.printing-bill [data-print-target="kitchen-slip"] {
+    display: none !important;
+  }
+  /* Hide customer bill if printing slip */
+  body.printing-slip [data-print-target="customer-bill"] {
+    display: none !important;
+  }
+  .print-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm;
+    font-family: "Courier New", Courier, monospace;
+    font-size: 12px;
+    padding: 4px;
+  }
+  .print-qr {
+    display: block !important;
+    width: 60px;
+    height: 60px;
+    margin: 8px auto;
+  }
+  .no-print {
+    display: none !important;
   }
 }
+
+/* print-content is visible on screen as a preview by default */
