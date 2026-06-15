@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
 import { KPICards } from "@/components/admin/KPICards";
 import { OrdersTable } from "@/components/admin/OrdersTable";
 import { ComplaintsTable } from "@/components/admin/ComplaintsTable";
@@ -24,6 +24,7 @@ export default function AdminPage() {
   const [complaints, setComplaints] = useState<Complaint[]>([]);
   const [loading, setLoading] = useState(true);
   const [resetOpen, setResetOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState('overview');
 
   useEffect(() => {
     const auth = sessionStorage.getItem("railsafe_admin_auth");
@@ -143,17 +144,26 @@ export default function AdminPage() {
         <KPICards data={data?.kpis || { ordersToday: 0, totalRevenueToday: 0, pendingComplaints: 0, averageOrderValue: 0 }} />
       </div>
 
-      <Tabs defaultValue="overview" className="w-full space-y-6">
-        <TabsList className="bg-slate-200/50 w-full justify-start h-auto p-1.5 rounded-xl overflow-x-auto flex gap-2 border border-slate-200 shadow-sm mb-6">
-          <TabsTrigger value="overview" className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-white/50 data-[state=active]:bg-rail-blue data-[state=active]:text-white transition-all shadow-sm">Overview</TabsTrigger>
-          <TabsTrigger value="orders" className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-white/50 data-[state=active]:bg-rail-blue data-[state=active]:text-white transition-all shadow-sm">Orders</TabsTrigger>
-          <TabsTrigger value="complaints" className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-white/50 data-[state=active]:bg-rail-blue data-[state=active]:text-white transition-all shadow-sm">Complaints</TabsTrigger>
-          <TabsTrigger value="analytics" className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-white/50 data-[state=active]:bg-rail-blue data-[state=active]:text-white transition-all shadow-sm">Analytics</TabsTrigger>
-        </TabsList>
-        
-        <TabsContent value="overview" className="space-y-6">
-          <div className="grid xl:grid-cols-2 gap-6">
-            <Card>
+      <div className="flex flex-wrap gap-2 mb-6 bg-slate-200/50 p-1.5 rounded-xl border border-slate-200 shadow-sm">
+        {['overview', 'orders', 'complaints', 'analytics'].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveTab(tab)}
+            className={`flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold capitalize transition-all shadow-sm ${
+              activeTab === tab
+                ? 'bg-rail-blue text-white'
+                : 'text-slate-600 hover:bg-white/50'
+            }`}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-6">
+        {activeTab === 'overview' && (
+          <div className="grid lg:grid-cols-2 gap-6">
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle>Recent Orders</CardTitle>
                 <CardDescription>Showing latest 5 orders</CardDescription>
@@ -163,7 +173,7 @@ export default function AdminPage() {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="shadow-sm">
               <CardHeader>
                 <CardTitle>Open Complaints</CardTitle>
                 <CardDescription>Latest complaints requiring attention</CardDescription>
@@ -176,10 +186,10 @@ export default function AdminPage() {
               </CardContent>
             </Card>
           </div>
-        </TabsContent>
-        
-        <TabsContent value="orders">
-          <Card>
+        )}
+
+        {activeTab === 'orders' && (
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>All Orders</CardTitle>
             </CardHeader>
@@ -187,10 +197,10 @@ export default function AdminPage() {
               <OrdersTable orders={orders} onStatusUpdate={() => fetchDashboardData(false)} />
             </CardContent>
           </Card>
-        </TabsContent>
-        
-        <TabsContent value="complaints">
-          <Card>
+        )}
+
+        {activeTab === 'complaints' && (
+          <Card className="shadow-sm">
             <CardHeader>
               <CardTitle>All Complaints</CardTitle>
             </CardHeader>
@@ -198,12 +208,14 @@ export default function AdminPage() {
               <ComplaintsTable complaints={complaints} onStatusUpdate={() => fetchDashboardData(false)} />
             </CardContent>
           </Card>
-        </TabsContent>
-        
-        <TabsContent value="analytics">
-          <AnalyticsCharts data={data?.charts || { revenueByDay: [], topItems: [], ordersPerStatus: [] }} />
-        </TabsContent>
-      </Tabs>
+        )}
+
+        {activeTab === 'analytics' && (
+          <div className="w-full">
+            <AnalyticsCharts data={data?.charts || { revenueByDay: [], topItems: [], ordersPerStatus: [] }} />
+          </div>
+        )}
+      </div>
 
       <ResetDialog 
         open={resetOpen} 
