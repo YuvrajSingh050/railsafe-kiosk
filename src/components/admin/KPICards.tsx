@@ -6,7 +6,7 @@ export function KPICards({ data }: { data: AnalyticsData["kpis"] }) {
   if (!data) return null;
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+    <div className="grid gap-4 grid-cols-2 md:grid-cols-4 mb-8">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Total Orders Today</CardTitle>

@@ -16,7 +16,7 @@ import { toast } from "sonner";
 import { Order, Complaint, AnalyticsData } from "@/types";
 
 export default function AdminPage() {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   
   const [data, setData] = useState<AnalyticsData | null>(null);
@@ -118,7 +118,7 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8 bg-slate-50 min-h-screen">
+    <div className="container mx-auto px-6 py-8 bg-slate-50 min-h-screen max-w-7xl">
       <DemoBanner />
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -127,12 +127,20 @@ export default function AdminPage() {
           <p className="text-muted-foreground mt-1">Manage orders, complaints, and analytics.</p>
         </div>
         
-        <div className="flex gap-4">
+        <div className="flex flex-wrap gap-4">
           <Button variant="outline" onClick={() => fetchDashboardData(true)} className="flex items-center gap-2">
             <RefreshCw size={16} />
             Refresh
           </Button>
+          <Button variant="destructive" className="flex items-center gap-2" onClick={() => setResetOpen(true)}>
+            <Trash2 size={16} />
+            Reset Demo Data
+          </Button>
         </div>
+      </div>
+
+      <div className="mb-6">
+        <KPICards data={data?.kpis || { ordersToday: 0, totalRevenueToday: 0, pendingComplaints: 0, averageOrderValue: 0 }} />
       </div>
 
       <Tabs defaultValue="overview" className="w-full space-y-6">
@@ -144,15 +152,7 @@ export default function AdminPage() {
         </TabsList>
         
         <TabsContent value="overview" className="space-y-6">
-          <div className="flex justify-end">
-            <Button variant="destructive" className="flex items-center gap-2" onClick={() => setResetOpen(true)}>
-              <Trash2 size={16} />
-              Reset Demo Data
-            </Button>
-          </div>
-          <KPICards data={data?.kpis || { ordersToday: 0, totalRevenueToday: 0, pendingComplaints: 0, averageOrderValue: 0 }} />
-          
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid xl:grid-cols-2 gap-6">
             <Card>
               <CardHeader>
                 <CardTitle>Recent Orders</CardTitle>

@@ -4,7 +4,7 @@ import type { Order } from "@/types";
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { UnifiedBill } from "@/components/order/UnifiedBill";
-import { StatusTracker } from "@/components/order/StatusTracker";
+
 import { Button } from "@/components/ui/button";
 import { Printer, ShieldAlert, Loader2 } from "lucide-react";
 import Link from "next/link";
@@ -59,10 +59,6 @@ export default function OrderPage() {
         
         <div className="bg-rail-green/10 border border-rail-green/30 text-rail-green px-4 py-3 rounded-md text-center font-bold no-print text-lg">
           Order placed successfully!
-        </div>
-        
-        <div className="bg-white p-6 rounded-xl border border-rail-blue/10 shadow-sm no-print mb-8">
-          <StatusTracker initialOrder={order} />
         </div>
 
         <div>
