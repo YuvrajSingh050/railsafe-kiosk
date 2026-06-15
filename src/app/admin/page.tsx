@@ -144,11 +144,11 @@ export default function AdminPage() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full space-y-6">
-        <TabsList className="bg-rail-blue/5 w-full justify-start h-auto p-1 overflow-x-auto flex-wrap sm:flex-nowrap border border-rail-blue/10">
-          <TabsTrigger value="overview" className="flex-1 sm:flex-none data-[state=active]:bg-rail-blue data-[state=active]:text-white">Overview</TabsTrigger>
-          <TabsTrigger value="orders" className="flex-1 sm:flex-none data-[state=active]:bg-rail-blue data-[state=active]:text-white">Orders</TabsTrigger>
-          <TabsTrigger value="complaints" className="flex-1 sm:flex-none data-[state=active]:bg-rail-blue data-[state=active]:text-white">Complaints</TabsTrigger>
-          <TabsTrigger value="analytics" className="flex-1 sm:flex-none data-[state=active]:bg-rail-blue data-[state=active]:text-white">Analytics</TabsTrigger>
+        <TabsList className="bg-slate-200/50 w-full justify-start h-auto p-1.5 rounded-xl overflow-x-auto flex gap-2 border border-slate-200 shadow-sm mb-6">
+          <TabsTrigger value="overview" className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-white/50 data-[state=active]:bg-rail-blue data-[state=active]:text-white transition-all shadow-sm">Overview</TabsTrigger>
+          <TabsTrigger value="orders" className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-white/50 data-[state=active]:bg-rail-blue data-[state=active]:text-white transition-all shadow-sm">Orders</TabsTrigger>
+          <TabsTrigger value="complaints" className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-white/50 data-[state=active]:bg-rail-blue data-[state=active]:text-white transition-all shadow-sm">Complaints</TabsTrigger>
+          <TabsTrigger value="analytics" className="flex-1 sm:flex-none px-6 py-2.5 rounded-lg text-sm font-semibold text-slate-600 hover:bg-white/50 data-[state=active]:bg-rail-blue data-[state=active]:text-white transition-all shadow-sm">Analytics</TabsTrigger>
         </TabsList>
         
         <TabsContent value="overview" className="space-y-6">
